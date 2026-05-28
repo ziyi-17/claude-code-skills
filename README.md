@@ -1,9 +1,12 @@
 # Claude Code Skills
 
-Personal Claude Code skills collection. Currently includes:
+Personal Claude Code skills collection.
+
+## Skills
 
 ### vision
-Auto-route image recognition to Gemini 3.5 Flash when the current model lacks multimodal vision. Works with any OpenAI-compatible API endpoint.
+Auto-route image recognition to Gemini 3.5 Flash when the current model lacks multimodal vision.
+Works with any OpenAI-compatible API endpoint.
 
 ## Install
 
@@ -13,11 +16,12 @@ cd claude-code-skills
 ./install.sh
 ```
 
-The installer will:
-1. Copy skill definitions to `~/.claude/skills/`
-2. Copy helper scripts to `~/.claude/scripts/`
-3. Configure environment variables in `~/.claude/settings.json`
-4. Prompt for your Gemini API key (or read from `GEMINI_API_KEY` env var)
+The installer will ask for:
+- **API URL** — your OpenAI-compatible endpoint (e.g. `https://api.ikuncode.cc`)
+- **Model name** — the vision model to use (e.g. `gemini-3.5-flash`)
+- **API key** — your API key
+
+All values can also be pre-set via environment variables: `GEMINI_API_URL`, `GEMINI_MODEL`, `GEMINI_API_KEY`.
 
 ## Update
 
@@ -30,4 +34,4 @@ git pull
 ## Requirements
 
 - Python 3 (built into macOS / most Linux distros)
-- Gemini API key (or any OpenAI-compatible vision API endpoint)
+- An OpenAI-compatible vision API endpoint with a supported model

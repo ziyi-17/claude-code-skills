@@ -10,11 +10,15 @@ MIME_MAP = {
 
 def analyze_image(image_path, prompt):
     api_key = os.environ.get("GEMINI_API_KEY")
-    api_url = os.environ.get("GEMINI_API_URL", "https://api.ikuncode.cc")
-    model = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+    api_url = os.environ.get("GEMINI_API_URL", "")
+    model = os.environ.get("GEMINI_MODEL", "")
 
     if not api_key:
-        return "ERROR: GEMINI_API_KEY not set"
+        return "ERROR: GEMINI_API_KEY not set — add it in ~/.claude/settings.json → env"
+    if not api_url:
+        return "ERROR: GEMINI_API_URL not set — add it in ~/.claude/settings.json → env"
+    if not model:
+        return "ERROR: GEMINI_MODEL not set — add it in ~/.claude/settings.json → env"
     if not os.path.exists(image_path):
         return f"ERROR: File not found: {image_path}"
 

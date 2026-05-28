@@ -27,8 +27,8 @@ if [ ! -f "${SETTINGS_FILE}" ]; then
     echo '{}' > "${SETTINGS_FILE}"
 fi
 
-python3 - "$@" <<'PYEOF'
-import json, os, sys
+python3 "$@" <<'PYEOF'
+import json, os
 
 settings_file = os.path.expanduser("~/.claude/settings.json")
 
@@ -37,41 +37,41 @@ with open(settings_file) as f:
 
 env = config.setdefault("env", {})
 
-# API Key
-if "GEMINI_API_KEY" not in env:
-    key = os.environ.get("GEMINI_API_KEY", "")
-    if not key:
-        key = input("Enter your Gemini API key (or press Enter to skip): ").strip()
-    if key:
-        env["GEMINI_API_KEY"] = key
-        print(f"[OK] Set GEMINI_API_KEY")
+def ask(label, env_var, required=True, default=""):
+    if env_var in env:
+        print(f"[OK] {env_var} already configured")
+        return
+    val = os.environ.get(env_var, "")
+    if val:
+        env[env_var] = val
+        print(f"[OK] {env_var}={val} (from environment)")
+        return
+    hint = f" [default: {default}]" if default else ""
+    while True:
+        val = input(f"Enter {label}{hint}: ").strip()
+        if not val and default:
+            val = default
+        if val or not required:
+            break
+        print(f"  {label} is required.")
+    if val:
+        env[env_var] = val
+        print(f"[OK] {env_var}={val}")
     else:
-        print("[SKIP] GEMINI_API_KEY not set — add it manually in ~/.claude/settings.json")
-else:
-    print("[OK] GEMINI_API_KEY already configured")
+        print(f"[SKIP] {env_var} not set")
 
-# API URL
-if "GEMINI_API_URL" not in env:
-    url = os.environ.get("GEMINI_API_URL", "https://api.ikuncode.cc")
-    env["GEMINI_API_URL"] = url
-    print(f"[OK] Set GEMINI_API_URL={url}")
-else:
-    print("[OK] GEMINI_API_URL already configured")
+print("\n--- API Configuration ---\n")
 
-# Model
-if "GEMINI_MODEL" not in env:
-    model = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
-    env["GEMINI_MODEL"] = model
-    print(f"[OK] Set GEMINI_MODEL={model}")
-else:
-    print("[OK] GEMINI_MODEL already configured")
+ask("API URL (OpenAI-compatible endpoint)", "GEMINI_API_URL", default="https://api.ikuncode.cc")
+ask("Model name", "GEMINI_MODEL", default="gemini-3.5-flash")
+ask("API key", "GEMINI_API_KEY")
 
 with open(settings_file, "w") as f:
     json.dump(config, f, indent=2, ensure_ascii=False)
     f.write("\n")
+
+print("\n--- All required values configured ---")
 PYEOF
 
 echo ""
 echo "=== Done! ==="
-echo "If you didn't enter an API key, add it manually:"
-echo "  In ~/.claude/settings.json → env, set GEMINI_API_KEY"

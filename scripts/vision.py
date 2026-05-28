@@ -30,13 +30,19 @@ def analyze_image(image_path, prompt):
 
     body = {
         "model": model,
-        "messages": [{
-            "role": "user",
-            "content": [
-                {"type": "text", "text": prompt},
-                {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{b64}"}}
-            ]
-        }]
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an image description assistant. Describe ONLY what you can actually see in the image. Do NOT guess, fabricate, or invent details that are not clearly visible. If something is ambiguous, blurry, or partially occluded, state that honestly. Do not fill in gaps with assumptions — missing information is better than made-up information."
+            },
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{b64}"}}
+                ]
+            }
+        ]
     }
 
     url = f"{api_url}/v1/chat/completions"

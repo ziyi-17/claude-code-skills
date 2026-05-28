@@ -8,7 +8,7 @@ Auto-route image recognition to Gemini 3.5 Flash when the current model lacks mu
 ## Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-code-skills.git
+git clone https://github.com/ziyi-17/claude-code-skills.git
 cd claude-code-skills
 ./install.sh
 ```
